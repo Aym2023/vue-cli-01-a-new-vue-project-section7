@@ -3,29 +3,72 @@
         <header>
             <h1> My Friends </h1>
         </header>
+        <new-friend @add-contact="addContact">
+        </new-friend>
         <ul>
             <friend-contact 
-            name='Manula Lornez'
-            phone-number='012347892'
-            email-address='manula@localhost.com'
+            v-for="friend in friends"
+            :key="friend.id"
+            :id='friend.id'
+            :name='friend.name'
+            :phone-number='friend.phone'
+            :email-address='friend.email'
+            :is-favorite='friend.isFavorite'
+            @toggle-favorite='toggleFavoriteStatus'
+            @delete='deleteFriend'
             >                
-            </friend-contact>
-
-            <friend-contact 
-            name='Jonas Jones'
-            phone-number='0125599784'
-            email-address='jonas@localhost.com'
-            >
-            </friend-contact>
+        </friend-contact>
         </ul>
     </section>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      friends: [
+        {
+          id: 'manula',
+          name: 'Manula',
+          phone: '01128453337',
+          email: 'manual@localhott.com',
+          isFavorite: true
+        },
+       {
+        id: 'jonas',
+        name:'Jonas Jones',
+        phone:'0125599784',
+        email:'jonas@localhost.com',
+        isFavorite: true
+       }
+       ],
+    };
+  },
+  methods: {
+    toggleFavoriteStatus(friendId) {
+      const identifiedFriend = this.friends.find(friend => friend.id === friendId);
+      identifiedFriend.isFavorite = !identifiedFriend.isFavorite;
+    },
+    addContact(name, phone, email) {
+      const newFriendContact = {
+        id: new Date().toISOString(),
+        name: name,
+        phone: phone,
+        email: email,
+        isFavorite: false
+      };
+      this.friends.push(newFriendContact);
+    },
+    deleteFriend(friendId) {
+     this.friends = this.friends.filter(friend => friend.id !== friendId);
+    },
+  }
+};
 </script>
 
-<style>* {
+<style>
+
+* {
     box-sizing: border-box;
   }
   
@@ -55,7 +98,8 @@ export default {};
     list-style: none;
   }
   
-  #app li {
+  #app li,
+  #app form {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
     margin: 1rem auto;
     border-radius: 10px;
